@@ -22,6 +22,7 @@ echo "Your working copy: $working_copy"
 
 # Find out what files are in the working copy, but not in
 # the extracted tarball dir, and should thus be removed.
+# TODO: check if in the grep command, we need $dir_local or $working_copy.
 #diff -r $dir_local $working_copy | grep "Only in $dir_local" | sed -r -e 's/^.*Only in //' -e 's@: @/@' > ~/files_to_svn_delete.txt
 
 # Svn delete all files that are in the working copy, but not
