@@ -28,6 +28,8 @@ svn add --force $dir_working --no-ignore --no-auto-props
 # the original directory, and should thus be removed.
 diff -r $dir_orig $dir_working | grep "Only in $dir_working" | sed -r -e 's/^.*Only in //' -e 's@: @/@' > ~/files_to_svn_delete.txt
 
+# TODO: remove line with $dir_working/.svn from ~/files_to_svn_delete.txt
+
 # Svn delete all files that are in the working copy, but not
 # in the directory with the original source.
 # TODO:
