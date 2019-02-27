@@ -28,7 +28,8 @@ svn add --force $dir_working --no-ignore --no-auto-props
 # the original directory, and should thus be removed.
 diff -r $dir_orig $dir_working | grep "Only in $dir_working" | sed -r -e 's/^.*Only in //' -e 's@: @/@' > ~/files_to_svn_delete.txt
 
-# TODO: remove line with $dir_working/.svn from ~/files_to_svn_delete.txt
+# Remove line with $dir_working/.svn from ~/files_to_svn_delete.txt, because we don't have to svn delete that one.
+sed -i "/$dir_working\/.svn/d" ~/files_to_svn_delete.txt
 
 # Svn delete all files that are in the working copy, but not
 # in the directory with the original source.
@@ -39,7 +40,6 @@ diff -r $dir_orig $dir_working | grep "Only in $dir_working" | sed -r -e 's/^.*O
 #     See also http://svnbook.red-bean.com/en/1.7/svn.advanced.pegrevs.html
 #     Maybe we can even append an @ to every file???
 #   - files in the root dir are not in files_to_svn_delete.txt???
-#   - avoid deleting root .svn directory, which is also in ~/files_to_svn_delete.txt
 for file in `cat ~/files_to_svn_delete.txt`
 do
     svn delete "$file"
