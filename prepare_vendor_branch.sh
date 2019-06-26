@@ -2,7 +2,14 @@
 #
 # Script to prepare a vendor branch upgrade.
 #
-# TODO: this script is unfinished.
+# TODO: this script is unfinished:
+#
+#   * I experienced a problem with the Canon SDK: it tries to delete a filename with space in it:
+#       svn: E200005: Use --force to override this restriction (local modifications may be lost)
+#       svn: E200005: 'C:\Digital_EOS_SDK\Windows\Sample\diagram' is not under version control
+#       svn: E155007: 'C:\of' is not a working copy
+#       svn: E155007: 'C:\camera' is not a working copy
+#       svn: E155007: 'C:\control.pdf' is not a working copy
 #
 # Prerequisites:
 #   1. You have an extracted tarball/zip of the original source in dir_orig
