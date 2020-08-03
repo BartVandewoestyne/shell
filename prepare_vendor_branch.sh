@@ -65,3 +65,4 @@ echo "done."
 # The files that changed their capitalization, probably show up as missing.  I
 # I think you can svn delete these, but then also check if their counterparts
 # were svn added (or should we svn rename them?)
+# See also http://subversion.apache.org/faq.html#case-change
