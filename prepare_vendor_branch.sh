@@ -4,6 +4,13 @@
 #
 # TODO: this script is unfinished:
 #
+#   * Using Qt, I have seen that a file that is initially lower case (e.g. foo.cpp) and in the
+#     new version has the same name but uppercase (e.g. FOO.cpp), will appear as follows in the
+#     svn status:
+#       foo.cpp => 'missing'
+#       FOO.cpp => 'added'
+#     The foo.cpp must then still be svn deleted manually.
+#
 #   * I experienced a problem with the Canon SDK: it tries to delete a filename with space in it:
 #       svn: E200005: Use --force to override this restriction (local modifications may be lost)
 #       svn: E200005: 'C:\Digital_EOS_SDK\Windows\Sample\diagram' is not under version control
