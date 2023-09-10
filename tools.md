@@ -1,6 +1,7 @@
 * ShellCheck:<br>
   https://www.shellcheck.net/<br>
-  https://github.com/koalaman/shellcheck
+  https://github.com/koalaman/shellcheck<br>
+  https://github.com/vscode-shellcheck/vscode-shellcheck
   
 * sh:<br>
   https://github.com/mvdan/sh
