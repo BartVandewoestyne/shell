@@ -18,16 +18,16 @@ outputfile=${inputfile%.eps}.png
 
 echo -n "Rasterizing EPS figure with Ghostscript... "
 gs -q \
-   -r${dpi} \
+   -r"${dpi}" \
    -dEPSCrop \
    -dTextAlphaBits=4 \
    -sDEVICE=png16m \
-   -sOutputFile=${outputfile} \
+   -sOutputFile="${outputfile}" \
    -dBATCH \
    -dNOPAUSE \
-   ${inputfile}
+   "${inputfile}"
 echo "done."
 
 echo -n "Resizing PNG image with convert..."
-convert ${outputfile} -resize ${sizex} -quality 100 -depth 8 ${outputfile}
+convert "${outputfile}" -resize "${sizex}" -quality 100 -depth 8 "${outputfile}"
 echo "done."
