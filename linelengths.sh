@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 #
-# This script plots line lengths of .cpp files inside a directory.
+# Plot histogram of line lengths for all .cpp files recursively found inside
+# a directory.
 #
 # Usage: run
 #
-#   linelength.sh
+#   ./linelength.sh
 #
-# somewhere in a directory.
+# somewhere in a directory that has .cpp files somewhere recursively down.
 
 export LC_ALL=C
 
-# Generate data file
 find . -type f -name "*.cpp" -print0 | xargs -0 awk '{ print length }' \
   | sort -n | uniq -c > linelengths.txt
 
