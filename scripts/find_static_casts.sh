@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 #
+# This is a script I used when working for TrealitySVS.
+#
 # TODO: remove hardcoded paths and make it more flexible and more generally
 # applicable.
 
