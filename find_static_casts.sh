@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 #
 # TODO: remove hardcoded paths and make it more flexible and more generally
 # applicable.

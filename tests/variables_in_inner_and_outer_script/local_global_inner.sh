@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 read_stuff() {
     foo="foo"

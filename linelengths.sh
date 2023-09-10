@@ -1,4 +1,4 @@
-#/bin/bash
+#!/usr/bin/env bash
 #
 # This script plots line lengths of .cpp files inside a directory.
 #
