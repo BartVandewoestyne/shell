@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-read -s -p "Password: " password
+read -r -s -p "Password: " password
 
 echo
 echo "Your password was $password"
