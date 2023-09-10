@@ -1,0 +1,192 @@
+#! /bin/bash
+
+##################################################
+# FIREWALL SCRIPT by mc303 <mc303 AT pandora.be> #
+#						 #
+# Last update: 13th december 2004		 #
+##################################################
+
+### USER CONFIGURABLE SECTION ###
+
+# Point this to your copy of iptables
+IPTABLES=/sbin/iptables
+
+# Our internal network address space and its supporting network device.
+LAN_IP_RANGE=192.168.0.0/24
+LAN_IFACE=eth0
+
+# The outside address and the network device that supports it.
+INET_IP_RANGE=0/0
+INET_IFACE=eth1
+
+
+### END USER CONFIGURABLE SECTION ###
+
+echo -n "Starting my very own firewall script..."
+
+# Flush the old rules and delete all user chains
+$IPTABLES -F
+$IPTABLES -X
+$IPTABLES -t nat -F
+$IPTABLES -t nat -X
+
+# Deny everything until firewall setup is completed
+$IPTABLES -P INPUT DROP
+$IPTABLES -P FORWARD DROP
+$IPTABLES -P OUTPUT DROP
+
+# Create my own LOGDROP chain
+$IPTABLES -t nat -N LOGDROP
+$IPTABLES -t nat -A LOGDROP -j LOG
+$IPTABLES -t nat -A LOGDROP -j DROP
+
+# Masquerade out local network
+$IPTABLES -t nat -A POSTROUTING -o $INET_IFACE -j MASQUERADE
+
+# Do some checks for obviously spoofed IP's on PREROUTING chain
+# class A
+$IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 10.0.0.0/8 -j LOGDROP
+# class B
+$IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 172.16.0.0/12 -j LOGDROP
+# class C
+$IPTABLES -t nat -A PREROUTING -i $INET_IFACE -s 192.168.0.0/16 -j LOGDROP
+
+# for kotnet stats page...
+#$IPTABLES -t nat -A PREROUTING -d 134.58.127.67 -p tcp --dport 80 -j REDIRECT --to-ports 10080
+#$IPTABLES -t nat -A PREROUTING -d 134.58.127.67 -p tcp --dport 443 -j REDIRECT --to-ports 10443
+
+# for REAIM (an AOL and MSN proxy)
+# see http://reaim.sourceforge.net
+#$IPTABLES -t nat -A PREROUTING -i $LAN_IFACE -p tcp --dport 5190 -j REDIRECT --to-ports 5190
+#$IPTABLES -t nat -A PREROUTING -i $LAN_IFACE -p tcp --dport 1863 -j REDIRECT --to-ports 1863
+
+# Drop multicast traffic withoug logging
+$IPTABLES -t mangle -I PREROUTING -j DROP -d 224.0.0.0/8
+
+
+###################################
+### Control traffic into server ###
+###################################
+
+# Allow unlimited traffic on the loopback interface
+$IPTABLES -A INPUT -i lo -j ACCEPT
+$IPTABLES -A OUTPUT -o lo -j ACCEPT
+
+# Allow unlimited traffic from internal network
+$IPTABLES -A INPUT -i $LAN_IFACE -s $LAN_IP_RANGE -j ACCEPT
+
+# Allow replies to already established connections
+$IPTABLES -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# Allow DHCP traffic
+$IPTABLES -A INPUT -i $LAN_IFACE -p udp --dport 67 -j ACCEPT
+
+# Allow CVS traffic
+$IPTABLES -A INPUT -p tcp --dport 2401 -j ACCEPT
+$IPTABLES -A INPUT -p udp --dport 2401 -j ACCEPT
+
+# Allow telnet (Autsch!)
+#$IPTABLES -A INPUT -p tcp --dport 2323 -j ACCEPT
+
+# Allow ssh from anyone
+# (sshd listens on port 2222 on my computers)
+$IPTABLES -A INPUT -p tcp --dport 2222 -j ACCEPT
+$IPTABLES -A INPUT -p udp --dport 2222 -j ACCEPT
+
+# Allow edonkey traffic
+$IPTABLES -A INPUT -m multiport -p tcp --ports 4661,4662 -j ACCEPT
+$IPTABLES -A INPUT -m multiport -p udp --ports 4665 -j ACCEPT
+
+# Allow Tetrinet traffic
+#$IPTABLES -A INPUT -m multiport -p tcp --ports 31456,31457,31458 -j ACCEPT
+
+# Allow FreeCiv traffic
+#$IPTABLES -A INPUT -p tcp --dport 5555 -j ACCEPT
+
+# Allow XPilot traffic
+#$IPTABLES -A INPUT -p udp --dport 15345 -j ACCEPT
+#$IPTABLES -A INPUT -m multiport -p udp --ports 40000,40001,40002,40003,40004,40005,40006,40007,40008,40009 -j ACCEPT
+
+# Allow Doom traffic
+#$IPTABLES -A INPUT -p udp --dport 5030 -j ACCEPT
+
+# Allow Armagetron traffic
+#$IPTABLES -A INPUT -m multiport -p udp --ports 1513,4532 -j ACCEPT
+
+# Do some REAIM (an AOL and MSN proxy) magic.
+# (See http://reaim.sourceforge.net)
+$IPTABLES -A INPUT -i $INET_IFACE -p tcp --dport 4443 -j ACCEPT
+$IPTABLES -A INPUT -i $INET_IFACE -p tcp --dport 5566 -j ACCEPT
+$IPTABLES -A INPUT -i $INET_IFACE -p tcp --dport 1864 -j ACCEPT
+
+# Allow traffic into webserver
+$IPTABLES -A INPUT -p tcp --dport 8080 -j ACCEPT
+$IPTABLES -A INPUT -p udp --dport 8080 -j ACCEPT
+
+# Allow nameserver packets
+$IPTABLES -A INPUT -p udp --sport 53 -j ACCEPT
+
+# Allow bootp packets
+$IPTABLES -A INPUT -p udp --sport 67 --dport 68 -j ACCEPT
+
+# Allow netbios stuff
+$IPTABLES -A INPUT -p udp --sport 137 --dport 137 -j ACCEPT
+$IPTABLES -A INPUT -p udp --sport 138 --dport 138 -j ACCEPT
+
+# Allow traffic from proxy
+$IPTABLES -A INPUT -p tcp --sport 8080 -j ACCEPT
+
+# Allow IRC
+$IPTABLES -A INPUT -i $INET_IFACE -p tcp --sport 6667 -j ACCEPT
+$IPTABLES -A INPUT -i $INET_IFACE -p udp --sport 6667 -j ACCEPT
+
+# Allow news and secure news
+$IPTABLES -A INPUT -i $INET_IFACE -p tcp --sport 563 -j ACCEPT
+$IPTABLES -A INPUT -i $INET_IFACE -p tcp --sport 119 -j ACCEPT
+
+# Allow traffic for my own newsserver
+# (nntp listening port at home is 1919)
+#$IPTABLES -A INPUT -i $INET_IFACE -p tcp --dport 1919 -j ACCEPT
+
+# Allow ICMP type 8 packets so I can check if server is up
+$IPTABLES -A INPUT -i $INET_IFACE -p icmp --icmp-type 8 -j ACCEPT
+
+# Reject auth packets (User Verification) which gives faster ssh respons
+$IPTABLES -A INPUT -i $INET_IFACE -p tcp --dport 113 -j REJECT
+
+# Drop anyting else and log
+$IPTABLES -A INPUT -j LOG --log-prefix "Firewall end INPUT: "
+$IPTABLES -A INPUT -j DROP
+
+
+######################################
+### Control traffic through server ###
+######################################
+
+# SPOOFING
+# Do not accept datagrams with a source address matching ours
+# from the outside.
+$IPTABLES -A FORWARD -s $LAN_IP_RANGE -i $INET_IFACE -j DROP
+
+# Allow replies to already established connections
+$IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# Block other incoming packets
+$IPTABLES -A FORWARD -i $INET_IFACE -o $LAN_IFACE -j DROP
+
+# Allow other outgoing packets
+$IPTABLES -A FORWARD -i $LAN_IFACE -o $INET_IFACE -j ACCEPT
+
+# Restore normal defaults now that rules are finished
+$IPTABLES -P INPUT DROP
+$IPTABLES -P FORWARD DROP
+$IPTABLES -P OUTPUT ACCEPT
+
+# Turn on IP forwarding and dynamic IP addresses
+echo 1 > /proc/sys/net/ipv4/ip_forward
+echo 1 > /proc/sys/net/ipv4/ip_dynaddr
+
+# Turn off those annoying error messages going to my console
+echo "1 4 1 7" >/proc/sys/kernel/printk
+
+echo "done."
