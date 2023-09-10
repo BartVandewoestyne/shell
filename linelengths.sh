@@ -11,7 +11,7 @@
 export LC_ALL=C
 
 # Generate data file
-find . -type f -name "*.cpp" | xargs awk '{ print length }' \
+find . -type f -name "*.cpp" -print0 | xargs -0 awk '{ print length }' \
   | sort -n | uniq -c > linelengths.txt
 
 gnuplot --persist -e "plot 'linelengths.txt' u 2:1 notitle"
