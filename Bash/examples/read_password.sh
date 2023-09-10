@@ -1,4 +1,4 @@
-#'/bin/bash
+#!/usr/bin/env bash
 
 read -s -p "Password: " password
 
