@@ -1,5 +1,7 @@
-echo $0
-echo $1
+#!/usr/bin/env bash
+
+echo "$0"
+echo "$1"
 
 if [[ $0 = '/'* ]]
  then
