@@ -6,5 +6,5 @@
 #
 #   find . -name "*.rb" -exec ./addgpl {} header.txt \;
 
-cat $2 $1 > $1.tmp
-mv $1.tmp $1
+cat "$2" "$1" > "$1".tmp
+mv "$1".tmp "$1"
