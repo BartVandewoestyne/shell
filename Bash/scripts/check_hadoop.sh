@@ -10,7 +10,7 @@ echo "FILESYSTEM CHECK (must be ext 3 or, even better, ext4)"
 for node in $NODES
 do
   echo -n "$node: "
-  ssh -q root@$node mount | grep "^\/dev"
+  ssh -q root@"$node" mount | grep "^\/dev"
 done
 echo ""
 
@@ -19,7 +19,7 @@ for node in $NODES
 do
   echo -n "$node: "
   #ssh -q root@$node cat /proc/sys/vm/swappiness
-  ssh -q root@$node sysctl vm.swappiness
+  ssh -q root@"$node" sysctl vm.swappiness
 done
 echo ""
 
@@ -27,6 +27,6 @@ echo "NOATIME (filesystem must be mounted with noatime)"
 for node in $NODES
 do
   echo -n "$node: "
-  ssh -q root@$node grep "noatime" /etc/fstab
+  ssh -q root@"$node" grep "noatime" /etc/fstab
 done
 echo ""
