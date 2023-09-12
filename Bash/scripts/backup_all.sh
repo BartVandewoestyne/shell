@@ -26,7 +26,7 @@ WHERE_TO_BACKUP="/mnt/backup/"
 FILELIST="/etc/init.d/my_firewall*"
 
 # First make a copy of some important files into my homedir...
-find ${FILELIST} | cpio -pumdv ${WHERE_TO_BACKUP_IMPORTANT_FILES};
+find "${FILELIST}" | cpio -pumdv ${WHERE_TO_BACKUP_IMPORTANT_FILES};
 
 # Now backup my homedirectory...
 
