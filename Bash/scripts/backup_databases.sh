@@ -26,7 +26,7 @@ DATABASES="addresses athletics azw boardgames books company_addresses paraglidin
 
 for db in ${DATABASES}; do
   echo -n "Backing up database ${db}..."
-  mysqldump -h ${SERVER} -u ${USER_NAME} --password=${PASSWORD} ${db} \
-        > ${HOME}/Dropbox/databases/${db}.mysqldb;
+  mysqldump -h ${SERVER} -u ${USER_NAME} --password=${PASSWORD} "${db}" \
+        > "${HOME}"/Dropbox/databases/"${db}".mysqldb;
   echo " done."
 done
