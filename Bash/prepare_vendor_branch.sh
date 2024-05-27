@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Script to prepare a vendor branch upgrade.
 #
@@ -38,13 +38,13 @@ echo "Directory with the working copy: $dir_working"
 
 
 echo "Adding any vendor drop items to version control..."
-svn add --force $dir_working --no-ignore --no-auto-props 
+svn add --force "$dir_working" --no-ignore --no-auto-props 
 echo "done."
 
 
 echo "Creating list of files to delete from working copy (because they no longer exist in the original source package)..."
 
-diff -r $dir_orig $dir_working | grep "Only in $dir_working" | sed -r -e 's/^.*Only in //' -e 's@: @/@' > ~/files_to_svn_delete.txt
+diff -r "$dir_orig" "$dir_working" | grep "Only in $dir_working" | sed -r -e 's/^.*Only in //' -e 's@: @/@' > ~/files_to_svn_delete.txt
 
 # Remove line with $dir_working/.svn from ~/files_to_svn_delete.txt, because we don't have to svn delete that one.
 sed -i "/$dir_working\/.svn/d" ~/files_to_svn_delete.txt
@@ -62,7 +62,7 @@ echo "done."
 #     Maybe we can even append an @ to every file???
 #   - files in the root dir are not in files_to_svn_delete.txt???
 echo "SVN deleting files from working copy that no longer exist in the original source package..."
-for file in `cat ~/files_to_svn_delete.txt`
+for file in $(cat ~/files_to_svn_delete.txt)
 do
     svn delete "$file"
 done

@@ -1,0 +1,74 @@
+#!/bin/bash
+#
+# Set the Fortran compiler to use
+#
+# Note:
+#   You should source this script somewhere from .basrc or .bashprofile so
+#   the function is known to your shell...
+#
+# TODO:
+#   make this working...
+
+function setcompiler() {
+
+local compiler=$1
+local mode=$2
+
+case $compiler  in
+
+  "F" )
+
+        FC="F"
+
+        case $mode in
+
+          "debug" )
+	     FFLAGS="-C=all -gline" ;;
+
+          "profile" )
+	     FFLAGS="-g" ;;
+
+          "production" )
+	     FFLAGS="-O4" ;;
+
+        esac ;;
+
+
+  "f95" )
+	export FC="f95"
+
+        case $mode in
+
+          "debug" )
+	     FFLAGS="-C=all -gline" ;;
+
+          "profile" )
+	     FFLAGS="-g" ;;
+
+          "production" )
+	     FFLAGS="-O4" ;;
+
+        esac ;;
+
+  "g95" )
+	export FC="g95"
+
+        case $mode in
+
+          "debug" )
+	     FFLAGS="-Wall -fbounds-check -std=F" ;;
+
+          "profile" )
+	     FFLAGS="-pg" ;;
+
+          "production" )
+	     FFLAGS="-O4" ;;
+
+        esac ;;
+
+  * )
+	echo "Error: unknown compiler!"
+	exit 1
+esac
+
+}
